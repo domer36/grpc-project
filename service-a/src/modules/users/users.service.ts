@@ -1,13 +1,16 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './users.interface';
 import { v4 as uuidv4 } from 'uuid';
-import { ClientGrpc } from '@nestjs/microservices';
+import { ClientGrpc, ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class UsersService {
   private users: User[] = [];
   private notificationService: any
-  constructor(@Inject('NOTIFICATION_PACKAGE') private client: ClientGrpc) {}
+  constructor(
+    @Inject('NOTIFICATION_PACKAGE') private client: ClientGrpc,
+    @Inject('RABBITMQ_SERVICE') private rabbitClient: ClientProxy,
+  ) {}
 
   onModuleInit() {
     this.notificationService = this.client.getService<any>('NotificationService');
@@ -25,9 +28,17 @@ export class UsersService {
     return newUser;
   }
 
+  updateUser(id: string, data: Partial<User>): User {
+    const user = this.users.find(u => u.id === id);
+    if (!user) throw new NotFoundException();
+
+    Object.assign(user, data);
+    this.rabbitClient.emit('user_updated', user);
+
+    return user;
+  }
+
   findById(id: string): User | null {
     return this.users.find(user => user.id === id) || null;
   }
-
-  
 }

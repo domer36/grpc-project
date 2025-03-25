@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './users.interface';
 
@@ -9,7 +9,6 @@ export class UsersController {
   @Post()
   create(@Body() userData: User): User {
     const user = this.usersService.create(userData);
-    // TODO enviar notificación por gRPC
     return user;
   }
 
@@ -17,4 +16,10 @@ export class UsersController {
   getUser(@Param('id') id: string): User | null {
     return this.usersService.findById(id);
   }
+
+  @Put(':id')
+  updateUser(@Param('id') id: string, @Body() body: User): User {
+    return this.usersService.updateUser(id, body);
+  }
+
 }
