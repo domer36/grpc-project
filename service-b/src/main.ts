@@ -20,7 +20,7 @@ import { join } from 'path';
       transport: Transport.GRPC,
       options: {
         package: 'notification',
-        protoPath: join(__dirname, './modules/notifications/notification.proto'),
+        protoPath: join(__dirname, '../src/modules/notifications/notification.proto'),
         url: '0.0.0.0:50051',
       },
     });

@@ -19,6 +19,7 @@ export class NotificationController {
     @GrpcMethod('NotificationService', 'NotifyUser')
     notifyUser(data: { userId: string; message: string }): { status: string } {
         console.log('Notificación recibida por gRPC:', data);
+        this.notificationService.send(data.userId, data.message)
         return { status: 'OK' };
     }
 }
