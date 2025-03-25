@@ -5,12 +5,19 @@ services:
       - 5672:5672
       - 15672:15672
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
   service-a:
     build: ./service-a
     ports:
       - "3000:3000"
     depends_on:
       - rabbitmq
+      - redis
 
   service-b:
     build: ./service-b
@@ -18,3 +25,4 @@ services:
       - "3001:3000"
     depends_on:
       - rabbitmq
+      - redis

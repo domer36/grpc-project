@@ -7,19 +7,19 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() userData: User): User {
-    const user = this.usersService.create(userData);
+  async create(@Body() userData: User): Promise<User> {
+    const user = await this.usersService.create(userData);
     return user;
   }
 
   @Get(':id')
-  getUser(@Param('id') id: string): User | null {
-    return this.usersService.findById(id);
+  async getUser(@Param('id') id: string): Promise<User | null> {
+    return await this.usersService.findById(id);
   }
 
   @Put(':id')
-  updateUser(@Param('id') id: string, @Body() body: User): User {
-    return this.usersService.updateUser(id, body);
+  async updateUser(@Param('id') id: string, @Body() body: User): Promise<User> {
+    return await this.usersService.updateUser(id, body);
   }
 
 }
