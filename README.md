@@ -1,6 +1,6 @@
 # Proyecto gRPC
 
-Este proyecto implementa una arquitectura de microservicios con NestJS para gestionar usuarios y notificaciones. Los servicios se comunican entre sí mediante **gRPC**, **HTTP REST** y **RabbitMQ**, y los datos se almacenan de forma eficiente en **Redis**.
+Este proyecto implementa una arquitectura de microservicios con NestJS para gestionar usuarios y notificaciones. La principal función de los servicios es comunicarse entre sí mediante **gRPC**, **HTTP REST** y **RabbitMQ**, y los datos se almacenan de forma eficiente en **Redis**.
 
 ---
 
@@ -57,11 +57,13 @@ cd grpc-project
 docker-compose up --build
 ```
 
-***Esto levantará***:
+***Servicios disponibles***:
 
 - ***service-a***: http://localhost:3000
 - ***service-b***: http://localhost:3001
-- ***Swagger User***: http://localhost:3000/api
-- ***Swagger Notificaciones***: http://localhost:3001/api
 - ***RabbitMQ Admin***: http://localhost:15672 (user: guest, pass: guest)
 - ***Redis***: en puerto 6379 (sin contraseña)
+
+## Documentación sobre la APIs disponibles
+- ***Swagger User***: http://localhost:3000/api
+- ***Swagger Notificaciones***: http://localhost:3001/api
