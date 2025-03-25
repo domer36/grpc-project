@@ -1,0 +1,115 @@
+openapi: 3.0.0
+info:
+  title: User Service API
+  version: 1.0.0
+  description: |
+    Este microservicio permite la creación, obtención y actualización de usuarios.
+    Al crear un usuario, se dispara una notificación vía gRPC.
+    Al actualizar un usuario, se emite un evento a RabbitMQ.
+
+servers:
+  - url: http://localhost:3000
+    description: Entorno local
+
+paths:
+  /users:
+    post:
+      summary: Crear un usuario
+      description: Crea un nuevo usuario en Redis y envía una notificación gRPC a service-b.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - age
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: integer
+              example:
+                name: Nombre del usuario
+                email: nombre@domain.com
+                age: 23
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                example:
+                  id: uuid-123-456
+                  name: Nombre del usuario
+                  email: nombre@domain.com
+                  age: 23
+
+  /users/{id}:
+    get:
+      summary: Obtener usuario por ID
+      description: Retorna los datos de un usuario específico desde Redis.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del usuario
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                example:
+                  id: uuid-123-456
+                  name: Nombre del usuario
+                  email: nombre@domain.com
+                  age: 23
+        '404':
+          description: Usuario no encontrado
+
+    put:
+      summary: Actualizar un usuario
+      description: Modifica uno o más campos de un usuario y emite un evento a RabbitMQ.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del usuario a actualizar
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: integer
+              example:
+                name: Nombre actualizado
+                age: 31
+      responses:
+        '200':
+          description: Usuario actualizado correctamente
+          content:
+            application/json:
+              schema:
+                example:
+                  id: uuid-123-456
+                  name: Nombre actualizado
+                  email: nombre@domain.com
+                  age: 31
+        '404':
+          description: Usuario no encontrado
