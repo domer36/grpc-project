@@ -24,7 +24,18 @@ import { join } from 'path';
         url: '0.0.0.0:50051',
       },
     });
-  
+
+    app.connectMicroservice({
+      transport: Transport.RMQ,
+      options: {
+        urls: ['amqp://rabbitmq:5672'],
+        queue: 'user-updates',
+        queueOptions: {
+          durable: false,
+        },
+      },
+    });
+    
     await app.startAllMicroservices();
     await app.listen(process.env.PORT ?? 3000);
 }
