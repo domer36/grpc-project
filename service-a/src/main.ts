@@ -11,7 +11,6 @@ async function bootstrap() {
   const document = yaml.load(
     readFileSync(resolve(__dirname, '../src/docs/swagger.yaml'), 'utf8')
   );
-  // const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   await app.listen(process.env.PORT ?? 3000);
 }

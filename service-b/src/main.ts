@@ -2,18 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
-import { join } from 'path';
+import { join, resolve } from 'path';
+import { readFileSync } from 'fs';
+import * as yaml from 'js-yaml';
 
   
   async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
-    const config = new DocumentBuilder()
-      .setTitle('Notification Service')
-      .setDescription('API para la creación de usuarios')
-      .setVersion('1.0')
-      .build();
-    const document = SwaggerModule.createDocument(app, config);
+    const document = yaml.load(
+      readFileSync(resolve(__dirname, '../src/docs/swagger.yaml'), 'utf8')
+    );
     SwaggerModule.setup('api', app, document);
 
     app.connectMicroservice<MicroserviceOptions>({

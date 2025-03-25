@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: Notification Service API
+  version: 1.0.0
+  description: |
+    Este microservicio permite enviar notificaciones a usuarios y registrar eventos recibidos vía HTTP, gRPC y RabbitMQ.
+    Las notificaciones se almacenan en Redis como logs.
+
+servers:
+  - url: http://localhost:3001
+    description: Entorno local
+
+paths:
+  /notifications:
+    post:
+      summary: Enviar una notificación a un usuario
+      description: Envía una notificación manual a un usuario y la registra en Redis.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - message
+              properties:
+                userId:
+                  type: string
+                message:
+                  type: string
+              example:
+                userId: uuid-123-456
+                message: Hola Usuario, tu cuenta ha sido activada.
+      responses:
+        '201':
+          description: Notificación registrada
+          content:
+            application/json:
+              schema:
+                example:
+                  id: uuid-456
+                  userId: uuid-123
+                  message: Hola Usuario, tu cuenta ha sido activada.
+                  timestamp: 2025-03-25T09:00:00Z
+
+    get:
+      summary: Obtener todas las notificaciones registradas
+      description: Retorna todos los logs de notificaciones almacenados en Redis.
+      responses:
+        '200':
+          description: Lista de notificaciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                example:
+                  - id: uuid-456
+                    userId: uuid-123-456
+                    message: Hola Usuario, tu cuenta ha sido activada.
+                    timestamp: 2025-03-25T09:00:00Z
+                  - id: uuid-789
+                    userId: uuid-123-456
+                    message: Usuario actualizado Usuario Actualizado
+                    timestamp: 2025-03-25T09:10:00Z
